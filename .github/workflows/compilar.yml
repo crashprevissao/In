@@ -48,12 +48,16 @@ jobs:
         sed -i '/<content src="index.html" \/>/a \    <icon src="www/icon.png" />' config.xml
         sed -i '/<platform name="android">/a \        <icon src="www/icon.png" />' config.xml
 
-    - name: Injetar Proteção Anti-Leitura de Tela (FLAG_SECURE)
+    - name: Injetar Proteção Total Anti-Espionagem (FLAG_SECURE Global)
       run: |
         cd meu_app
-        # Localiza a atividade principal nativa e injeta a flag de hardware
-        JAVA_FILE=$(find platforms/android/app/src/main/java -name "MainActivity.java")
-        sed -i '/super.onCreate(savedInstanceState);/a \        getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE);' $JAVA_FILE
+        # Busca TODOS os arquivos Java do aplicativo e dos plug-ins para aplicar a blindagem
+        find platforms/android/ -name "*.java" | while read -r java_file; do
+          if grep -q "super.onCreate" "$java_file"; then
+            echo "Blindando o arquivo: $java_file"
+            sed -i '/super.onCreate/a \        getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE);' "$java_file"
+          fi
+        done
 
     - name: Compilar o APK final Blindado
       run: |
