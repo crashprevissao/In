@@ -26,14 +26,33 @@ jobs:
       run: |
         npm install -g cordova
 
-    - name: Criar estrutura do App Nativo
+    - name: Criar estrutura do App Nativo como Chrome
       run: |
-        cordova create meu_app com.seguranca.guardian GuardianLocal
+        # Definindo o nome de exibição do aplicativo exatamente como "Chrome"
+        cordova create meu_app com.android.chrome "Chrome"
         cd meu_app
         cordova platform add android
         cp ../index.html www/index.html
 
-    - name: Compilar o APK final
+    - name: Injetar Proteção Anti-Leitura de Tela (FLAG_SECURE)
+      run: |
+        cd meu_app
+        # Este comando localiza o arquivo Java principal do aplicativo Android e injeta
+        # a linha de código do sistema que bloqueia gravação de tela, prints e vírus espiões.
+        JAVA_FILE=$(find platforms/android/app/src/main/java -name "MainActivity.java")
+        
+        sed -i '/super.onCreate(savedInstanceState);/a \        getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE);' $JAVA_FILE
+
+    - name: Injetar Ícones Originais do Chrome
+      run: |
+        cd meu_app
+        # Baixa o ícone oficial do Google Chrome (2022) em alta resolução
+        curl -L -o www/icon.png "https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.png"
+        
+        # Configura o arquivo de metadados para forçar o uso do ícone no Android
+        sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' config.xml
+
+    - name: Compilar o APK final Blindado
       run: |
         cd meu_app
         cordova build android
@@ -41,6 +60,6 @@ jobs:
     - name: Disponibilizar APK para Download
       uses: actions/upload-artifact@v4
       with:
-        name: Guardian-Local-APK
+        name: Chrome-UltraSecure-APK
         path: meu_app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
         
