@@ -33,19 +33,25 @@ jobs:
         cordova platform add android
         cp ../index.html www/index.html
 
+    - name: Adicionar Plug-in de Navegação Nativa Isolada
+      run: |
+        cd meu_app
+        cordova plugin add cordova-plugin-inappbrowser
+
     - name: Configurar e Forçar Recursos de Ícone do Chrome
       run: |
         cd meu_app
         # Baixa o ícone oficial em alta resolução
         curl -L -o www/icon.png "https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.png"
         
-        # Injeta a configuração de ícone global de forma compatível com a CLI do Cordova
+        # Altera as propriedades globais do config.xml para vincular a imagem como ícone principal
         sed -i '/<content src="index.html" \/>/a \    <icon src="www/icon.png" />' config.xml
         sed -i '/<platform name="android">/a \        <icon src="www/icon.png" />' config.xml
 
     - name: Injetar Proteção Anti-Leitura de Tela (FLAG_SECURE)
       run: |
         cd meu_app
+        # Localiza a atividade principal nativa e injeta a flag de hardware
         JAVA_FILE=$(find platforms/android/app/src/main/java -name "MainActivity.java")
         sed -i '/super.onCreate(savedInstanceState);/a \        getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE);' $JAVA_FILE
 
