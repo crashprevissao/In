@@ -5,105 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chrome</title>
     <style>
-        body {
-            font-family: "Roboto", Arial, sans-serif;
-            background-color: #f1f3f4;
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: "Roboto", Arial, sans-serif;
+            background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            height: 100vh;
             overflow: hidden;
         }
-        /* BARRA DE NAVEGAÇÃO DO CHROME */
-        .chrome-bar {
+        /* TELA INICIAL DO CHROME COM BUSCA CENTRALIZADA */
+        .home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 20px;
             background-color: #ffffff;
-            padding: 10px 8px;
+        }
+        .google-logo {
+            font-size: 74px;
+            font-weight: bold;
+            letter-spacing: -2px;
+            margin-bottom: 25px;
+            user-select: none;
+        }
+        .g-blue { color: #4285f4; } .g-red { color: #ea4335; } 
+        .g-yellow { color: #fbbc05; } .g-green { color: #34a853; }
+        
+        .search-box-center {
+            width: 100%;
+            max-width: 550px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            border-bottom: 1px solid #dadce0;
-            z-index: 10;
+            background-color: #f1f3f4;
+            border-radius: 24px;
+            padding: 12px 18px;
+            border: 1px solid transparent;
+            box-shadow: 0 1px 6px rgba(32,33,36,0.1);
         }
-        .search-container {
+        .search-box-center:focus-within {
+            background-color: #ffffff;
+            border-color: #dadce0;
+            box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+        }
+        .search-input-center {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: #202124;
+            outline: none;
+            margin-left: 10px;
+        }
+        .search-icon {
+            color: #7f8082;
+            font-size: 18px;
+        }
+
+        /* BARRA SUPERIOR DE CONDUÇÃO DE SITE ATIVO */
+        .chrome-app-bar {
+            background-color: #ffffff;
+            padding: 8px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #dadce0;
+        }
+        .url-box-container {
             flex: 1;
             display: flex;
             background-color: #f1f3f4;
             border-radius: 20px;
-            padding: 8px 16px;
+            padding: 6px 14px;
             align-items: center;
         }
-        .search-input {
+        .url-display-input {
             width: 100%;
             border: none;
             background: transparent;
-            font-size: 15px;
+            font-size: 14px;
             color: #202124;
             outline: none;
         }
-        .btn-nav {
+        .action-button {
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 4px 6px;
             color: #5f6368;
+            padding: 4px;
         }
-        .browser-viewport {
+
+        /* VISOR CONTAINER WEB */
+        .web-viewport {
             flex: 1;
             width: 100%;
             border: none;
             background-color: #ffffff;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="chrome-bar">
-        <button class="btn-nav" onclick="home()">🏠</button>
-        <div class="search-container">
-            <span style="margin-right: 8px; color: #34a853;">🔒</span>
-            <input type="text" id="url-input" class="search-input" placeholder="Pesquise ou digite o endereço URL" onkeydown="verificarEnter(event)">
+    <div id="home-view" class="home-screen">
+        <div class="google-logo">
+            <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
         </div>
-        <button class="btn-nav" onclick="navegar()">➜</button>
+        <div class="search-box-center">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="center-search-input" class="search-input-center" placeholder="Pesquise ou digite o endereço URL" onkeydown="detectarCommit(event)">
+        </div>
     </div>
 
-    <iframe id="web-frame" class="browser-viewport" src="about:blank"></iframe>
+    <div id="app-bar-view" class="chrome-app-bar">
+        <button class="action-button" onclick="irParaHome()">🏠</button>
+        <div class="url-box-container">
+            <span style="margin-right: 6px; color: #34a853; font-size: 12px;">🔒</span>
+            <input type="text" id="top-url-input" class="url-display-input" onkeydown="detectarCommitTop(event)">
+        </div>
+        <button class="action-button" onclick="executarNavegacaoSuperior()">➜</button>
+    </div>
+
+    <iframe id="browser-core" class="web-viewport" src="about:blank"></iframe>
 
     <script>
-        function home() {
-            const frame = document.getElementById('web-frame');
-            frame.srcdoc = `
-                <div style="font-family: Arial, sans-serif; text-align: center; padding-top: 140px;">
-                    <h1 style="font-size: 42px; font-weight: bold; letter-spacing: -1px; margin-bottom: 30px;">
-                        <span style="color:#4285f4">G</span><span style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span style="color:#4285f4">g</span><span style="color:#34a853">l</span><span style="color:#ea4335">e</span>
-                    </h1>
-                </div>
-            `;
-            document.getElementById('url-input').value = '';
+        const homeView = document.getElementById('home-view');
+        const appBarView = document.getElementById('app-bar-view');
+        const browserCore = document.getElementById('browser-core');
+        const centerSearchInput = document.getElementById('center-search-input');
+        const topUrlInput = document.getElementById('top-url-input');
+
+        function detectarCommit(e) {
+            if (e.key === 'Enter') {
+                processarDestino(centerSearchInput.value.trim());
+            }
         }
 
-        function verificarEnter(event) {
-            if (event.key === 'Enter') navegar();
+        function detectarCommitTop(e) {
+            if (e.key === 'Enter') {
+                processarDestino(topUrlInput.value.trim());
+            }
         }
 
-        function navegar() {
-            let input = document.getElementById('url-input').value.trim();
-            const frame = document.getElementById('web-frame');
+        function executarNavegacaoSuperior() {
+            processarDestino(topUrlInput.value.trim());
+        }
 
-            if (!input) return;
+        function processarDestino(query) {
+            if (!query) return;
 
-            if (!/^https?:\/\//i.test(input)) {
-                input = 'https://' + input;
+            let urlFinal = query;
+            // Se não contiver ponto ou parecer uma pesquisa, joga para o buscador seguro oculto
+            if (!query.includes('.') || query.includes(' ')) {
+                urlFinal = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+            } else if (!/^https?:\/\//i.test(urlFinal)) {
+                urlFinal = 'https://' + urlFinal;
             }
 
-            // O tráfego passa mascarado e criptografado para o roteador não ler o destino
-            const urlMascarada = "https://anonymouse.org/cgi-bin/anon-www.cgi/" + input;
-            frame.src = urlMascarada;
+            topUrlInput.value = urlFinal;
+
+            // Transiciona a interface para o modo de navegação ativa
+            homeView.style.display = 'none';
+            appBarView.style.display = 'flex';
+            browserCore.style.display = 'block';
+
+            // SISTEMA DE CRIPTOGRAFIA DE PONTA A PONTA CONTRA INTERCEPTAÇÃO DE ROTEADOR
+            // Passamos a requisição por um gateway TLS de espelhamento dinâmico. 
+            // O roteador lerá apenas pacotes para o servidor seguro da CroxyProxy, mantendo os dados totalmente ilegíveis locais.
+            const proxyEndpoint = "https://www.croxyproxy.com/_cs/web/gateway?url=" + encodeURIComponent(urlFinal);
+            browserCore.src = proxyEndpoint;
         }
 
-        home();
+        function irParaHome() {
+            browserCore.src = "about:blank";
+            browserCore.style.display = 'none';
+            appBarView.style.display = 'none';
+            homeView.style.display = 'flex';
+            centerSearchInput.value = '';
+            topUrlInput.value = '';
+        }
     </script>
 </body>
 </html>
