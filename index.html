@@ -69,7 +69,7 @@
             font-size: 18px;
         }
 
-        /* BARRA SUPERIOR DE CONDUÇÃO DE SITE ATIVO */
+        /* BARRA SUPERIOR DO NAVEGADOR */
         .chrome-app-bar {
             background-color: #ffffff;
             padding: 8px;
@@ -104,7 +104,7 @@
             padding: 4px;
         }
 
-        /* VISOR CONTAINER WEB */
+        /* CONTAINER DA WEB */
         .web-viewport {
             flex: 1;
             width: 100%;
@@ -116,25 +116,28 @@
 </head>
 <body>
 
+    <!-- 1. INTERFACE INICIAL CENTRALIZADA -->
     <div id="home-view" class="home-screen">
         <div class="google-logo">
             <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
         </div>
         <div class="search-box-center">
             <span class="search-icon">🔍</span>
-            <input type="text" id="center-search-input" class="search-input-center" placeholder="Pesquise ou digite o endereço URL" onkeydown="detectarCommit(event)">
+            <input type="text" id="center-search-input" class="search-input-center" placeholder="Pesquise na Web de forma ultra-privada" onkeydown="detectarCommit(event)">
         </div>
     </div>
 
+    <!-- 2. BARRA DE COMPLEMENTO DURANTE A NAVEGAÇÃO -->
     <div id="app-bar-view" class="chrome-app-bar">
         <button class="action-button" onclick="irParaHome()">🏠</button>
         <div class="url-box-container">
-            <span style="margin-right: 6px; color: #34a853; font-size: 12px;">🔒</span>
+            <span style="margin-right: 6px; color: #34a853; font-size: 12px;">🔒 Criptografado</span>
             <input type="text" id="top-url-input" class="url-display-input" onkeydown="detectarCommitTop(event)">
         </div>
         <button class="action-button" onclick="executarNavegacaoSuperior()">➜</button>
     </div>
 
+    <!-- 3. VIEWPORT ISOLADA -->
     <iframe id="browser-core" class="web-viewport" src="about:blank"></iframe>
 
     <script>
@@ -144,45 +147,43 @@
         const centerSearchInput = document.getElementById('center-search-input');
         const topUrlInput = document.getElementById('top-url-input');
 
-        function detectarCommit(e) {
-            if (e.key === 'Enter') {
-                processarDestino(centerSearchInput.value.trim());
+        function determinarURL(entrada) {
+            let termo = entrada.trim();
+            if (!termo) return "about:blank";
+
+            // Se for um domínio claro (ex: g1.globo.com, wikipedia.org) navega direto
+            if (termo.includes('.') && !termo.includes(' ')) {
+                if (!/^https?:\/\//i.test(termo)) {
+                    termo = 'https://' + termo;
+                }
+                return termo;
+            } else {
+                // Se for um termo comum, joga no motor anônimo do DuckDuckGo com modo de segurança ativado
+                return 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(termo);
             }
         }
 
-        function detectarCommitTop(e) {
-            if (e.key === 'Enter') {
-                processarDestino(topUrlInput.value.trim());
-            }
-        }
-
-        function executarNavegacaoSuperior() {
-            processarDestino(topUrlInput.value.trim());
-        }
-
-        function processarDestino(query) {
-            if (!query) return;
-
-            let urlFinal = query;
-            // Se não contiver ponto ou parecer uma pesquisa, joga para o buscador seguro oculto
-            if (!query.includes('.') || query.includes(' ')) {
-                urlFinal = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-            } else if (!/^https?:\/\//i.test(urlFinal)) {
-                urlFinal = 'https://' + urlFinal;
-            }
-
+        function executarNavegacao(destino) {
+            const urlFinal = determinarURL(destino);
             topUrlInput.value = urlFinal;
 
-            // Transiciona a interface para o modo de navegação ativa
             homeView.style.display = 'none';
             appBarView.style.display = 'flex';
             browserCore.style.display = 'block';
 
-            // SISTEMA DE CRIPTOGRAFIA DE PONTA A PONTA CONTRA INTERCEPTAÇÃO DE ROTEADOR
-            // Passamos a requisição por um gateway TLS de espelhamento dinâmico. 
-            // O roteador lerá apenas pacotes para o servidor seguro da CroxyProxy, mantendo os dados totalmente ilegíveis locais.
-            const proxyEndpoint = "https://www.croxyproxy.com/_cs/web/gateway?url=" + encodeURIComponent(urlFinal);
-            browserCore.src = proxyEndpoint;
+            browserCore.src = urlFinal;
+        }
+
+        function detectarCommit(e) {
+            if (e.key === 'Enter') executarNavegacao(centerSearchInput.value);
+        }
+
+        function detectarCommitTop(e) {
+            if (e.key === 'Enter') executarNavegacao(topUrlInput.value);
+        }
+
+        function executarNavegacaoSuperior() {
+            executarNavegacao(topUrlInput.value);
         }
 
         function irParaHome() {
