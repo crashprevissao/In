@@ -3,263 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guardian Local</title>
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Guardian%20Local%22%2C%22short_name%22%3A%22Guardian%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%231a73e8%22%7D">
+    <title>Chrome</title>
     <style>
         body {
-            font-family: "Roboto", "Segoe UI", Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #202124;
+            font-family: "Roboto", Arial, sans-serif;
+            background-color: #f1f3f4;
             margin: 0;
-            padding: 16px;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
-        .google-header {
+        /* BARRA DE NAVEGAÇÃO DO CHROME */
+        .chrome-bar {
+            background-color: #ffffff;
+            padding: 10px 8px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            margin-bottom: 24px;
-            margin-top: 10px;
+            gap: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #dadce0;
+            z-index: 10;
         }
-        .google-logo {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: -1px;
+        .search-container {
+            flex: 1;
+            display: flex;
+            background-color: #f1f3f4;
+            border-radius: 20px;
+            padding: 8px 16px;
+            align-items: center;
         }
-        .g-blue { color: #4285f4; } .g-red { color: #ea4335; } 
-        .g-yellow { color: #fbbc05; } .g-green { color: #34a853; }
-        
-        .sub-title {
-            font-size: 14px;
-            color: #5f6368;
-            margin-top: 5px;
-        }
-        .card {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-            max-width: 500px;
+        .search-input {
             width: 100%;
-            padding: 24px;
-            box-sizing: border-box;
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a73e8;
-            margin-bottom: 8px;
-        }
-        input[type="password"], textarea, input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-            background-color: #fff;
-        }
-        input:focus, textarea:focus {
-            border-color: #1a73e8;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: #202124;
             outline: none;
         }
-        .btn-group {
-            display: flex;
-            gap: 8px;
-        }
-        button {
-            flex: 1;
-            background-color: #1a73e8;
-            color: white;
+        .btn-nav {
+            background: none;
             border: none;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 18px;
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 4px 6px;
+            color: #5f6368;
         }
-        button.secondary {
-            background-color: #fff;
-            color: #1a73e8;
-            border: 1px solid #dadce0;
-        }
-        button:active { background-color: #1557b0; }
-        button.secondary:active { background-color: #f8f9fa; }
-        
-        .output-panel {
-            margin-top: 16px;
-            padding: 12px;
-            background: #f1f3f4;
-            border-radius: 4px;
-            font-size: 14px;
-            word-break: break-all;
-            border: 1px dashed #dadce0;
-        }
-        .badge-security {
-            text-align: center;
-            font-size: 11px;
-            color: #70757a;
-            margin-top: 8px;
-        }
-        #preview-img {
-            max-width: 100%;
-            border-radius: 4px;
-            margin-top: 10px;
-            display: none;
+        .browser-viewport {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background-color: #ffffff;
         }
     </style>
 </head>
 <body>
 
-<div class="google-header">
-    <div class="google-logo">
-        <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
-        <span style="color:#5f6368; font-weight: 400; font-size: 22px; margin-left: 4px;">Guardian</span>
+    <div class="chrome-bar">
+        <button class="btn-nav" onclick="home()">🏠</button>
+        <div class="search-container">
+            <span style="margin-right: 8px; color: #34a853;">🔒</span>
+            <input type="text" id="url-input" class="search-input" placeholder="Pesquise ou digite o endereço URL" onkeydown="verificarEnter(event)">
+        </div>
+        <button class="btn-nav" onclick="navegar()">➜</button>
     </div>
-    <div class="sub-title">Intranet Local Isolada e Criptografada</div>
-</div>
 
-<div class="card">
-    <label for="master-key">Chave Mestra de Segurança</label>
-    <input type="password" id="master-key" placeholder="Senha para cifrar/decifrar os dados">
-</div>
+    <iframe id="web-frame" class="browser-viewport" src="about:blank"></iframe>
 
-<div class="card">
-    <label for="note-input">Notas e Textos Confidenciais</label>
-    <textarea id="note-input" rows="4" placeholder="Escreva aqui as informações que deseja ocultar..."></textarea>
-    
-    <div class="btn-group">
-        <button onclick="processarTexto()">Criptografar Texto</button>
-        <button class="secondary" onclick="carregarTexto()">Ler Salvo</button>
-    </div>
-    <div id="text-output" class="output-panel" style="display:none;"></div>
-</div>
+    <script>
+        function home() {
+            const frame = document.getElementById('web-frame');
+            frame.srcdoc = `
+                <div style="font-family: Arial, sans-serif; text-align: center; padding-top: 140px;">
+                    <h1 style="font-size: 42px; font-weight: bold; letter-spacing: -1px; margin-bottom: 30px;">
+                        <span style="color:#4285f4">G</span><span style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span style="color:#4285f4">g</span><span style="color:#34a853">l</span><span style="color:#ea4335">e</span>
+                    </h1>
+                </div>
+            `;
+            document.getElementById('url-input').value = '';
+        }
 
-<div class="card">
-    <label for="file-input">Criptografar Foto ou Arquivo (Armazenamento Interno)</label>
-    <input type="file" id="file-input">
-    
-    <div class="btn-group">
-        <button onclick="processarArquivo()">Salvar Arquivo Protegido</button>
-        <button class="secondary" onclick="carregarArquivo()">Restaurar Arquivo</button>
-    </div>
-    <div id="file-output" class="output-panel" style="display:none;"></div>
-    <img id="preview-img" alt="Foto Descriptografada">
-</div>
+        function verificarEnter(event) {
+            if (event.key === 'Enter') navegar();
+        }
 
-<div class="badge-security">
-    🔒 Modo Failsafe Ativo: Sem conexões de rede. Isolamento via hardware.
-</div>
+        function navegar() {
+            let input = document.getElementById('url-input').value.trim();
+            const frame = document.getElementById('web-frame');
 
-<script>
-    // Inicialização do Banco de Dados Interno (IndexedDB) para suportar arquivos grandes
-    let db;
-    const request = indexedDB.open("GuardianDB", 1);
-    request.onupgradeneeded = (e) => {
-        db = e.target.result;
-        db.createObjectStore("secure_store");
-    };
-    request.onsuccess = (e) => db = e.target.result;
+            if (!input) return;
 
-    async function obterChave(senha) {
-        const enc = new TextEncoder();
-        const hash = await crypto.subtle.digest('SHA-256', enc.encode(senha));
-        return crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
-    }
+            if (!/^https?:\/\//i.test(input)) {
+                input = 'https://' + input;
+            }
 
-    // --- LOGICA DE TEXTO ---
-    async function processarTexto() {
-        const senha = document.getElementById('master-key').value;
-        const texto = document.getElementById('note-input').value;
-        if(!senha || !texto) return alert("Preencha a senha e o texto!");
+            // O tráfego passa mascarado e criptografado para o roteador não ler o destino
+            const urlMascarada = "https://anonymouse.org/cgi-bin/anon-www.cgi/" + input;
+            frame.src = urlMascarada;
+        }
 
-        const chave = await obterChave(senha);
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const criptografado = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, chave, new TextEncoder().encode(texto));
-
-        // Salva no banco de dados local offline
-        const tx = db.transaction("secure_store", "readwrite");
-        tx.objectStore("secure_store").put({ iv: iv, data: criptografado }, "nota_secreta");
-        
-        document.getElementById('note-input').value = '';
-        alert("Texto ocultado e salvo no banco de dados local!");
-    }
-
-    async function carregarTexto() {
-        const senha = document.getElementById('master-key').value;
-        if(!senha) return alert("Insira sua senha mestre.");
-
-        const tx = db.transaction("secure_store", "readonly");
-        const req = tx.objectStore("secure_store").get("nota_secreta");
-
-        req.onsuccess = async () => {
-            if(!req.result) return alert("Nenhum dado encontrado.");
-            try {
-                const chave = await obterChave(senha);
-                const decodificado = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: req.result.iv }, chave, req.result.data);
-                const painel = document.getElementById('text-output');
-                painel.style.display = "block";
-                painel.innerText = new TextDecoder().decode(decodificado);
-            } catch { alert("Chave incorreta! Acesso negado."); }
-        };
-    }
-
-    // --- LOGICA DE ARQUIVOS / FOTOS ---
-    async function processarArquivo() {
-        const senha = document.getElementById('master-key').value;
-        const fileInput = document.getElementById('file-input').files[0];
-        if(!senha || !fileInput) return alert("Selecione um arquivo e digite a senha!");
-
-        const leitor = new FileReader();
-        leitor.onload = async (e) => {
-            const arrayBuffer = e.target.result;
-            const chave = await obterChave(senha);
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const criptografado = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, chave, arrayBuffer);
-
-            const tx = db.transaction("secure_store", "readwrite");
-            tx.objectStore("secure_store").put({ iv: iv, data: criptografado, name: fileInput.name, type: fileInput.type }, "arquivo_secreto");
-            alert("Arquivo transformado em binário protegido e armazenado!");
-        };
-        leitor.readAsArrayBuffer(fileInput);
-    }
-
-    async function carregarArquivo() {
-        const senha = document.getElementById('master-key').value;
-        if(!senha) return alert("Insira sua senha mestre.");
-
-        const tx = db.transaction("secure_store", "readonly");
-        const req = tx.objectStore("secure_store").get("arquivo_secreto");
-
-        req.onsuccess = async () => {
-            if(!req.result) return alert("Nenhum arquivo encontrado.");
-            try {
-                const chave = await obterChave(senha);
-                const decodificado = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: req.result.iv }, chave, req.result.data);
-                
-                const blob = new Blob([decodificado], { type: req.result.type });
-                const url = URL.createObjectURL(blob);
-                
-                const imgPreview = document.getElementById('preview-img');
-                const painel = document.getElementById('file-output');
-                
-                if(req.result.type.startsWith("image/")) {
-                    imgPreview.src = url;
-                    imgPreview.style.display = "block";
-                    painel.style.display = "none";
-                } else {
-                    imgPreview.style.display = "none";
-                    painel.style.display = "block";
-                    painel.innerHTML = `<a href="${url}" download="${req.result.name}">⬇️ Baixar Arquivo Restaurado (${req.result.name})</a>`;
-                }
-            } catch { alert("Falha na descriptografia. Chave incorreta."); }
-        };
-    }
-</script>
+        home();
+    </script>
 </body>
 </html>
