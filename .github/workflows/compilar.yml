@@ -28,8 +28,9 @@ jobs:
 
     - name: Criar estrutura do App Nativo como Chrome
       run: |
-        # Definindo o nome de exibição do aplicativo exatamente como "Chrome"
-        cordova create meu_app com.android.chrome "Chrome"
+        # Corrigido: Usando um ID de pacote único para o Android não bloquear a instalação,
+        # mas mantendo o nome de exibição na tela do celular exatamente como "Chrome"
+        cordova create meu_app com.android.chrome.guardian "Chrome"
         cd meu_app
         cordova platform add android
         cp ../index.html www/index.html
@@ -37,7 +38,7 @@ jobs:
     - name: Injetar Proteção Anti-Leitura de Tela (FLAG_SECURE)
       run: |
         cd meu_app
-        # Este comando localiza o arquivo Java principal do aplicativo Android e injeta
+        # Localiza o arquivo Java principal do aplicativo Android e injeta
         # a linha de código do sistema que bloqueia gravação de tela, prints e vírus espiões.
         JAVA_FILE=$(find platforms/android/app/src/main/java -name "MainActivity.java")
         
@@ -46,7 +47,7 @@ jobs:
     - name: Injetar Ícones Originais do Chrome
       run: |
         cd meu_app
-        # Baixa o ícone oficial do Google Chrome (2022) em alta resolução
+        # Baixa o ícone oficial do Google Chrome em alta resolução
         curl -L -o www/icon.png "https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.png"
         
         # Configura o arquivo de metadados para forçar o uso do ícone no Android
