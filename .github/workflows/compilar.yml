@@ -2,8 +2,8 @@ name: Compilar APK Ultra-Seguro
 
 on:
   push:
-    branches: [ "principal", "main" ] # Roda sempre que você atualizar o código
-  workflow_dispatch: # Permite que você clique em um botão para compilar quando quiser
+    branches: [ "principal", "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -31,17 +31,16 @@ jobs:
         cordova create meu_app com.seguranca.guardian GuardianLocal
         cd meu_app
         cordova platform add android
-        # Copia o seu index.html para dentro da pasta do app nativo
         cp ../index.html www/index.html
 
     - name: Compilar o APK final
       run: |
         cd meu_app
-        cordova build android --device --release
+        cordova build android
 
     - name: Disponibilizar APK para Download
       uses: actions/upload-artifact@v4
       with:
         name: Guardian-Local-APK
-        path: meu_app/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
+        path: meu_app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
         
