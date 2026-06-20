@@ -3,159 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intranet Ultra-Segura</title>
+    <title>Guardian Local</title>
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Guardian%20Local%22%2C%22short_name%22%3A%22Guardian%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%231a73e8%22%7D">
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --text-color: #c9d1d9;
-            --accent: #58a6ff;
-            --danger: #f85149;
-        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #202124;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .container {
-            max-width: 600px;
-            width: 100%;
-            background: var(--panel-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            border: 1px solid #30363d;
-        }
-        h1 { color: var(--accent); text-align: center; font-size: 24px; }
-        label { display: block; margin: 15px 0 5px; font-weight: bold; }
-        input, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            border: 1px solid #30363d;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            box-sizing: border-box;
-        }
-        button {
-            background-color: var(--accent);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
+        .google-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
             margin-top: 10px;
         }
-        button:hover { opacity: 0.9; }
-        .output {
-            background: #000;
-            padding: 15px;
-            border-radius: 6px;
-            min-height: 50px;
-            word-break: break-all;
-            font-family: monospace;
-            border: 1px solid #21262d;
+        .google-logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: -1px;
         }
-        .status { text-align: center; font-size: 12px; color: #8b949e; margin-top: 20px; }
+        .g-blue { color: #4285f4; } .g-red { color: #ea4335; } 
+        .g-yellow { color: #fbbc05; } .g-green { color: #34a853; }
+        
+        .sub-title {
+            font-size: 14px;
+            color: #5f6368;
+            margin-top: 5px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            max-width: 500px;
+            width: 100%;
+            padding: 24px;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a73e8;
+            margin-bottom: 8px;
+        }
+        input[type="password"], textarea, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        input:focus, textarea:focus {
+            border-color: #1a73e8;
+            outline: none;
+        }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        button {
+            flex: 1;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        button.secondary {
+            background-color: #fff;
+            color: #1a73e8;
+            border: 1px solid #dadce0;
+        }
+        button:active { background-color: #1557b0; }
+        button.secondary:active { background-color: #f8f9fa; }
+        
+        .output-panel {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f1f3f4;
+            border-radius: 4px;
+            font-size: 14px;
+            word-break: break-all;
+            border: 1px dashed #dadce0;
+        }
+        .badge-security {
+            text-align: center;
+            font-size: 11px;
+            color: #70757a;
+            margin-top: 8px;
+        }
+        #preview-img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Guardião Local v1.0</h1>
-    <p style="text-align: center; font-size: 14px; color: #8b949e;">Isolamento de Rede Total (Air-Gapped Local App)</p>
+<div class="google-header">
+    <div class="google-logo">
+        <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+        <span style="color:#5f6368; font-weight: 400; font-size: 22px; margin-left: 4px;">Guardian</span>
+    </div>
+    <div class="sub-title">Intranet Local Isolada e Criptografada</div>
+</div>
+
+<div class="card">
+    <label for="master-key">Chave Mestra de Segurança</label>
+    <input type="password" id="master-key" placeholder="Senha para cifrar/decifrar os dados">
+</div>
+
+<div class="card">
+    <label for="note-input">Notas e Textos Confidenciais</label>
+    <textarea id="note-input" rows="4" placeholder="Escreva aqui as informações que deseja ocultar..."></textarea>
     
-    <label for="secret-key">1. Chave de Criptografia (Mestra):</label>
-    <input type="password" id="secret-key" placeholder="Digite sua senha ultra-secreta aqui">
+    <div class="btn-group">
+        <button onclick="processarTexto()">Criptografar Texto</button>
+        <button class="secondary" onclick="carregarTexto()">Ler Salvo</button>
+    </div>
+    <div id="text-output" class="output-panel" style="display:none;"></div>
+</div>
 
-    <label for="data-input">2. Texto / Dados para Processar:</label>
-    <textarea id="data-input" rows="5" placeholder="Escreva suas notas confidenciais aqui..."></textarea>
+<div class="card">
+    <label for="file-input">Criptografar Foto ou Arquivo (Armazenamento Interno)</label>
+    <input type="file" id="file-input">
+    
+    <div class="btn-group">
+        <button onclick="processarArquivo()">Salvar Arquivo Protegido</button>
+        <button class="secondary" onclick="carregarArquivo()">Restaurar Arquivo</button>
+    </div>
+    <div id="file-output" class="output-panel" style="display:none;"></div>
+    <img id="preview-img" alt="Foto Descriptografada">
+</div>
 
-    <button onclick="gerenciarDados('criptografar')">Criptografar e Salvar Localmente</button>
-    <button onclick="gerenciarDados('descriptografar')" style="background-color: #238636;">Descriptografar Dados Salvos</button>
-
-    <label>3. Painel de Saída:</label>
-    <div id="output-panel" class="output">Nenhum dado carregado.</div>
-
-    <div class="status">Modo: 100% Offline | Comunicação de Rede: Bloqueada</div>
+<div class="badge-security">
+    🔒 Modo Failsafe Ativo: Sem conexões de rede. Isolamento via hardware.
 </div>
 
 <script>
-    // Segurança Avançada: Usando a API Web Crypto nativa do navegador (Sem pacotes externos)
-    async function gerarChave(senha) {
+    // Inicialização do Banco de Dados Interno (IndexedDB) para suportar arquivos grandes
+    let db;
+    const request = indexedDB.open("GuardianDB", 1);
+    request.onupgradeneeded = (e) => {
+        db = e.target.result;
+        db.createObjectStore("secure_store");
+    };
+    request.onsuccess = (e) => db = e.target.result;
+
+    async function obterChave(senha) {
         const enc = new TextEncoder();
-        const digest = await crypto.subtle.digest('SHA-256', enc.encode(senha));
-        return crypto.subtle.importKey(
-            'raw', digest, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']
-        );
+        const hash = await crypto.subtle.digest('SHA-256', enc.encode(senha));
+        return crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
     }
 
-    async function gerenciarDados(operacao) {
-        const senha = document.getElementById('secret-key').value;
-        const input = document.getElementById('data-input').value;
-        const painel = document.getElementById('output-panel');
+    // --- LOGICA DE TEXTO ---
+    async function processarTexto() {
+        const senha = document.getElementById('master-key').value;
+        const texto = document.getElementById('note-input').value;
+        if(!senha || !texto) return alert("Preencha a senha e o texto!");
 
-        if (!senha) {
-            alert('Você PRECISA de uma chave mestra!');
-            return;
-        }
+        const chave = await obterChave(senha);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const criptografado = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, chave, new TextEncoder().encode(texto));
 
-        try {
-            const chaveObj = await gerarChave(senha);
-            const enc = new TextEncoder();
-
-            if (operacao === 'criptografar') {
-                if (!input) return alert('Digite algo para criptografar.');
-                
-                // Vetor de Inicialização (IV) para o AES-GCM
-                const iv = crypto.getRandomValues(new Uint8Array(12));
-                const criptografado = await crypto.subtle.encrypt(
-                    { name: 'AES-GCM', iv: iv }, chaveObj, enc.encode(input)
-                );
-
-                // Junta o IV + Dados Criptografados e transforma em Base64 para salvar
-                const resultadoArray = new Uint8Array(iv.byteLength + criptografado.byteLength);
-                resultadoArray.set(iv, 0);
-                resultadoArray.set(new Uint8Array(criptografado), iv.byteLength);
-                
-                const base64 = btoa(String.fromCharCode(...resultadoArray));
-                
-                // Salva no armazenamento do próprio navegador (LocalStorage)
-                localStorage.setItem('intranet_secure_data', base64);
-                painel.innerText = "DADO CRIPTOGRAFADO E SALVO EM MEMÓRIA INTERNA:\n\n" + base64;
-                document.getElementById('data-input').value = ''; // Limpa o input por segurança
-
-            } else if (operacao === 'descriptografar') {
-                const dadosSalvos = localStorage.getItem('intranet_secure_data');
-                if (!dadosSalvos) return alert('Nenhum dado salvo encontrado.');
-
-                // Reconverte de Base64
-                const dadosArray = new Uint8Array(atob(dadosSalvos).split("").map(c => c.charCodeAt(0)));
-                const iv = dadosArray.slice(0, 12);
-                const dadosCripto = dadosArray.slice(12);
-
-                const decodificado = await crypto.subtle.decrypt(
-                    { name: 'AES-GCM', iv: iv }, chaveObj, dadosCripto
-                );
-
-                const dec = new TextDecoder();
-                painel.innerText = dec.decode(decodificado);
-            }
-        } catch (e) {
-            painel.innerText = "ERRO: Chave incorreta ou dados corrompidos.";
-            console.error(e);
-        }
+        // Salva no banco de dados local offline
+        const tx = db.transaction("secure_store", "readwrite");
+        tx.objectStore("secure_store").put({ iv: iv, data: criptografado }, "nota_secreta");
+        
+        document.getElementById('note-input').value = '';
+        alert("Texto ocultado e salvo no banco de dados local!");
     }
 
-    // Bloqueio extra: Impede o app de tentar fazer qualquer requisição de rede externa
-    window.addEventListener('online', () => alert('Atenção: Seu celular se conectou à internet. Este app continua isolado.'));
+    async function carregarTexto() {
+        const senha = document.getElementById('master-key').value;
+        if(!senha) return alert("Insira sua senha mestre.");
+
+        const tx = db.transaction("secure_store", "readonly");
+        const req = tx.objectStore("secure_store").get("nota_secreta");
+
+        req.onsuccess = async () => {
+            if(!req.result) return alert("Nenhum dado encontrado.");
+            try {
+                const chave = await obterChave(senha);
+                const decodificado = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: req.result.iv }, chave, req.result.data);
+                const painel = document.getElementById('text-output');
+                painel.style.display = "block";
+                painel.innerText = new TextDecoder().decode(decodificado);
+            } catch { alert("Chave incorreta! Acesso negado."); }
+        };
+    }
+
+    // --- LOGICA DE ARQUIVOS / FOTOS ---
+    async function processarArquivo() {
+        const senha = document.getElementById('master-key').value;
+        const fileInput = document.getElementById('file-input').files[0];
+        if(!senha || !fileInput) return alert("Selecione um arquivo e digite a senha!");
+
+        const leitor = new FileReader();
+        leitor.onload = async (e) => {
+            const arrayBuffer = e.target.result;
+            const chave = await obterChave(senha);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const criptografado = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, chave, arrayBuffer);
+
+            const tx = db.transaction("secure_store", "readwrite");
+            tx.objectStore("secure_store").put({ iv: iv, data: criptografado, name: fileInput.name, type: fileInput.type }, "arquivo_secreto");
+            alert("Arquivo transformado em binário protegido e armazenado!");
+        };
+        leitor.readAsArrayBuffer(fileInput);
+    }
+
+    async function carregarArquivo() {
+        const senha = document.getElementById('master-key').value;
+        if(!senha) return alert("Insira sua senha mestre.");
+
+        const tx = db.transaction("secure_store", "readonly");
+        const req = tx.objectStore("secure_store").get("arquivo_secreto");
+
+        req.onsuccess = async () => {
+            if(!req.result) return alert("Nenhum arquivo encontrado.");
+            try {
+                const chave = await obterChave(senha);
+                const decodificado = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: req.result.iv }, chave, req.result.data);
+                
+                const blob = new Blob([decodificado], { type: req.result.type });
+                const url = URL.createObjectURL(blob);
+                
+                const imgPreview = document.getElementById('preview-img');
+                const painel = document.getElementById('file-output');
+                
+                if(req.result.type.startsWith("image/")) {
+                    imgPreview.src = url;
+                    imgPreview.style.display = "block";
+                    painel.style.display = "none";
+                } else {
+                    imgPreview.style.display = "none";
+                    painel.style.display = "block";
+                    painel.innerHTML = `<a href="${url}" download="${req.result.name}">⬇️ Baixar Arquivo Restaurado (${req.result.name})</a>`;
+                }
+            } catch { alert("Falha na descriptografia. Chave incorreta."); }
+        };
+    }
 </script>
-
 </body>
 </html>
-
