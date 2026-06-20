@@ -28,20 +28,20 @@ jobs:
 
     - name: Criar estrutura do App Nativo como Chrome
       run: |
-        # Mantém o ID único que permitiu a instalação e o nome visível como "Chrome"
         cordova create meu_app com.android.chrome.guardian "Chrome"
         cd meu_app
         cordova platform add android
         cp ../index.html www/index.html
 
-    - name: Configurar e Forçar Ícone do Chrome
+    - name: Configurar e Forçar Recursos de Ícone do Chrome
       run: |
         cd meu_app
-        # Descarrega o ícone oficial em alta resolução diretamente na raiz do projeto
-        curl -L -o icon.png "https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.png"
+        # Baixa o ícone oficial em alta resolução
+        curl -L -o www/icon.png "https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.png"
         
-        # Altera as propriedades do ficheiro de configuração para apontar para a raiz
-        sed -i '/<\/widget>/i \    <icon src="icon.png" />' config.xml
+        # Injeta a configuração de ícone global de forma compatível com a CLI do Cordova
+        sed -i '/<content src="index.html" \/>/a \    <icon src="www/icon.png" />' config.xml
+        sed -i '/<platform name="android">/a \        <icon src="www/icon.png" />' config.xml
 
     - name: Injetar Proteção Anti-Leitura de Tela (FLAG_SECURE)
       run: |
