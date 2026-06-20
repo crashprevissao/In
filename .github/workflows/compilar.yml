@@ -1,0 +1,47 @@
+name: Compilar APK Ultra-Seguro
+
+on:
+  push:
+    branches: [ "principal", "main" ] # Roda sempre que você atualizar o código
+  workflow_dispatch: # Permite que você clique em um botão para compilar quando quiser
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Baixando o código do seu GitHub
+      uses: actions/checkout@v4
+
+    - name: Configurando o ambiente Java (JDK)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Configurando o Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Instalar NodeJS e Cordova
+      run: |
+        npm install -g cordova
+
+    - name: Criar estrutura do App Nativo
+      run: |
+        cordova create meu_app com.seguranca.guardian GuardianLocal
+        cd meu_app
+        cordova platform add android
+        # Copia o seu index.html para dentro da pasta do app nativo
+        cp ../index.html www/index.html
+
+    - name: Compilar o APK final
+      run: |
+        cd meu_app
+        cordova build android --device --release
+
+    - name: Disponibilizar APK para Download
+      uses: actions/upload-artifact@v4
+      with:
+        name: Guardian-Local-APK
+        path: meu_app/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
+        
