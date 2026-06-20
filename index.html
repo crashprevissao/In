@@ -89,16 +89,11 @@
     </div>
 
     <div class="footer-shield">
-        🔒 Isolamento Criptografado Ativo (FLAG_SECURE)
+        🔒 Isolamento de Hardware Ativo (FLAG_SECURE)
     </div>
 
+    <script src="cordova.js"></script>
     <script>
-        document.addEventListener("deviceready", onDeviceReady, false);
-        
-        function onDeviceReady() {
-            // Inicialização de recursos nativos do Cordova, se necessário
-        }
-
         function detectarEnter(e) {
             if (e.key === 'Enter') {
                 executarNavegacao(document.getElementById('search-input').value.trim());
@@ -110,20 +105,21 @@
 
             let urlFinal = entrada;
             
-            // Verifica se é uma URL válida ou um termo de busca
             if (entrada.includes('.') && !entrada.includes(' ')) {
                 if (!/^https?:\/\//i.test(urlFinal)) {
                     urlFinal = 'https://' + urlFinal;
                 }
             } else {
-                // Motor de busca privado via HTTPS
                 urlFinal = 'https://duckduckgo.com/?q=' + encodeURIComponent(entrada);
             }
 
-            // Segurança Militar e Isolamento de Resposta:
-            // Usamos a substituição de localização de janela nativa para contornar restrições de X-Frame-Options.
-            // O tráfego de saída permanece criptografado via TLS/HTTPS protegendo contra interceptação do roteador.
-            window.location.href = urlFinal;
+            // O InAppBrowser abre a janela de forma segura e nativa dentro do app base, 
+            // herdando a proteção de FLAG_SECURE contra spywares e mantendo o tráfego oculto via HTTPS.
+            if (window.cordova && window.cordova.InAppBrowser) {
+                window.cordova.InAppBrowser.open(urlFinal, '_blank', 'location=yes,hardwareback=yes,clearcache=yes,clearsessioncache=yes');
+            } else {
+                window.open(urlFinal, '_blank');
+            }
         }
     </script>
 </body>
